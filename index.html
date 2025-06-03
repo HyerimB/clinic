@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GOS 이태수T 클리닉</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #1e3a5f 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            padding: 40px;
+            width: 90%;
+            max-width: 500px;
+            text-align: center;
+        }
+        
+        .title {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 30px;
+            background: linear-gradient(45deg, #667eea, #1e3a5f);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .login-form {
+            display: block;
+        }
+        
+        .menu-section {
+            display: none;
+        }
+        
+        .clinic-application {
+            display: none;
+        }
+        
+        .clinic-results {
+            display: none;
+        }
+        
+        .admin-panel {
+            display: none;
+        }
+        
+        .input-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e1e5e9;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+        
+        input:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        .btn {
+            background: linear-gradient(45deg, #667eea, #1e3a5f);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 10px;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+        
+        .btn-secondary {
+            background: linear-gradient(45deg, #667eea, #1e3a5f);
+            color: white;
+        }
+        
+        .time-slots {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .time-slot {
+            padding: 10px;
+            border: 2px solid #e1e5e9;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: white;
+        }
+        
+        .time-slot:hover {
+            border-color: e1e5e9;
+            background: #f8f9ff;
+        }
+        
+        .time-slot.selected {
+            background: linear-gradient(45deg, #e1e5e9, #1e3a5f);
+            color: white;
+            border-color: #e1e5e9;
+        }
+        
+        .time-slot.unavailable {
+            background: #f5f5f5;
+            color: #999;
+            cursor: not-allowed;
+        }
+        
+        .back-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .student-list {
+            max-height: 300px;
+            overflow-y: auto;
+            border: 1px solid #e1e5e9;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        
+        .student-item {
+            padding: 10px;
+            border-bottom: 1px solid #e1e5e9;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        
+        .student-item:hover {
+            background: #f8f9ff;
+        }
+        
+        .student-item.selected {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+        }
+        
+        .admin-section {
+            margin: 20px 0;
+            padding: 20px;
+            border: 1px solid #e1e5e9;
+            border-radius: 10px;
+            background: #f8f9ff;
+        }
+        
+        .file-input {
+            margin: 10px 0;
+        }
+        
+        .hidden {
+            display: none !important;
+        }
+		
+		.no-results {
+			padding: 20px;
+			text-align: center;
+			color: #666;
+			font-style: italic;
+		}
+
+.student-item.hidden {
+    display: none !important;
+}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 로그인 화면 -->
+        <div class="login-form">
+            <h1 class="title">GOS 이태수T 클리닉</h1>
+            <div class="input-group">
+                <label for="password">비밀번호를 입력하세요</label>
+                <input type="password" id="password" placeholder="비밀번호">
+            </div>
+            <button class="btn" onclick="login()">로그인</button>
+        </div>
+        
+        <!-- 메뉴 선택 화면 -->
+        <div class="menu-section">
+            <h1 class="title">GOS 이태수T 클리닉</h1>
+            <button class="btn" onclick="showClinicApplication()">클리닉 신청</button>
+            <button class="btn btn-secondary" onclick="showClinicResults()">클리닉 결과</button>
+            <button class="btn hidden" id="adminBtn" onclick="showAdminPanel()">관리자 페이지</button>
+        </div>
+        
+        <!-- 클리닉 신청 화면 -->
+        <div class="clinic-application">
+            <button class="back-btn" onclick="showMenu()">← 뒤로</button>
+            <h2>클리닉 신청</h2>
+            
+            <div id="studentSelection">
+				<div class="input-group">
+					<label>학생 정보를 선택하세요</label>
+					<!-- 검색 입력창 추가 -->
+					<input type="text" id="studentSearch" placeholder="학생 이름을 검색하세요..." 
+						style="margin-bottom: 10px; padding: 10px; border: 2px solid #e1e5e9; border-radius: 8px; width: 100%; box-sizing: border-box;"
+						oninput="searchStudents()">
+					<div class="student-list" id="studentList">
+						<!-- 학생 목록이 여기에 동적으로 추가됩니다 -->
+					</div>
+				</div>
+				<button class="btn" onclick="selectStudent()">선택</button>
+			</div>
+            
+            <div id="timeSelection" class="hidden">
+                <div class="input-group">
+                    <label>선택된 학생:</label>
+                    <div id="selectedStudentInfo"></div>
+                </div>
+                
+                <div class="input-group">
+                    <label>클리닉 시간을 선택하세요</label>
+                    <div class="time-slots">
+                        <div class="time-slot" data-time="수요일 4시" onclick="selectTime(this)">수요일 4시</div>
+                        <div class="time-slot" data-time="수요일 5시" onclick="selectTime(this)">수요일 5시</div>
+                        <div class="time-slot" data-time="수요일 6시" onclick="selectTime(this)">수요일 6시</div>
+                        <div class="time-slot" data-time="수요일 7시" onclick="selectTime(this)">수요일 7시</div>
+                        <div class="time-slot" data-time="수요일 8시" onclick="selectTime(this)">수요일 8시</div>
+                        <div class="time-slot" data-time="목요일 4시" onclick="selectTime(this)">목요일 4시</div>
+                        <div class="time-slot" data-time="목요일 5시" onclick="selectTime(this)">목요일 5시</div>
+                        <div class="time-slot" data-time="목요일 6시" onclick="selectTime(this)">목요일 6시</div>
+                        <div class="time-slot" data-time="목요일 7시" onclick="selectTime(this)">목요일 7시</div>
+                        <div class="time-slot" data-time="목요일 8시" onclick="selectTime(this)">목요일 8시</div>
+                        <div class="time-slot" data-time="금요일 4시" onclick="selectTime(this)">금요일 4시</div>
+                        <div class="time-slot" data-time="금요일 5시" onclick="selectTime(this)">금요일 5시</div>
+                        <div class="time-slot" data-time="금요일 6시" onclick="selectTime(this)">금요일 6시</div>
+                        <div class="time-slot" data-time="금요일 7시" onclick="selectTime(this)">금요일 7시</div>
+                        <div class="time-slot" data-time="금요일 8시" onclick="selectTime(this)">금요일 8시</div>
+                        <div class="time-slot" data-time="토요일 12시" onclick="selectTime(this)">토요일 12시</div>
+                        <div class="time-slot" data-time="토요일 1시" onclick="selectTime(this)">토요일 1시</div>
+                        <div class="time-slot" data-time="토요일 2시" onclick="selectTime(this)">토요일 2시</div>
+                        <div class="time-slot" data-time="토요일 3시" onclick="selectTime(this)">토요일 3시</div>
+						<div class="time-slot" data-time="토요일 4시" onclick="selectTime(this)">토요일 4시</div>
+						<div class="time-slot" data-time="X" onclick="selectTime(this)">클리닉 불가</div>
+                    </div>
+                </div>
+                
+                <button class="btn" onclick="submitApplication()">신청 완료</button>
+                <button class="btn btn-secondary" onclick="goBackToStudentSelection()">학생 다시 선택</button>
+            </div>
+        </div>
+        
+        <!-- 클리닉 결과 화면 -->
+        <div class="clinic-results">
+            <button class="back-btn" onclick="showMenu()">← 뒤로</button>
+            <h2>클리닉 결과</h2>
+            <p>클리닉 결과는 시험 후 공개됩니다.</p>
+        </div>
+        
+        <!-- 관리자 페이지 -->
+        <div class="admin-panel">
+            <button class="back-btn" onclick="showMenu()">← 뒤로</button>
+            <h2>관리자 페이지</h2>
+            
+            <div class="admin-section">
+                <h3>클리닉 신청 현황</h3>
+                <button class="btn" onclick="downloadApplications()">신청 내역 다운로드</button>
+                <div id="applicationsList"></div>
+            </div>
+            
+            <div class="admin-section">
+                <h3>재원 학생 데이터 관리</h3>
+                <div class="file-input">
+                    <label for="studentFile">학생 데이터 엑셀 파일 업로드:</label>
+                    <input type="file" id="studentFile" accept=".xlsx,.xls" onchange="uploadStudentData()">
+                    <div id="uploadStatus" style="margin-top: 10px; font-size: 14px;"></div>
+                </div>
+                <button class="btn btn-secondary" onclick="downloadStudentTemplate()">학생 데이터 템플릿 다운로드</button>
+                <div id="currentStudents" style="margin-top: 20px;">
+                    <h4>현재 등록된 학생 수: <span id="studentCount">3</span>명</h4>
+                    <button class="btn" onclick="showCurrentStudents()" style="font-size: 14px; padding: 8px 16px;">학생 목록 보기</button>
+                </div>
+                <div id="studentListDisplay" style="display: none; margin-top: 15px; max-height: 200px; overflow-y: auto; border: 1px solid #ddd; padding: 10px; border-radius: 5px;"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script>
+        // 데이터 저장 변수들
+        let students = [
+            {name: "김철수", phone: "010-1234-5678", school: "서울고등학교", grade: "2학년"},
+            {name: "이영희", phone: "010-2345-6789", school: "부산고등학교", grade: "3학년"},
+            {name: "박민수", phone: "010-3456-7890", school: "대구고등학교", grade: "1학년"}
+        ];
+        
+        let applications = [];
+        let selectedStudent = null;
+        let selectedTime = null;
+        let isAdmin = false;
+        
+		
+		document.addEventListener('DOMContentLoaded', function() {
+    const passwordInput = document.querySelector('input[placeholder="비밀번호"]');
+    const loginButton = document.querySelector('button'); // 로그인 버튼
+    
+    if (passwordInput && loginButton) {
+        passwordInput.addEventListener('keydown', function(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault(); // 기본 동작 방지
+                loginButton.click(); // 로그인 버튼 클릭 실행
+            }
+        });
+    }
+});
+        
+        // 전화번호 형식 맞추기 함수
+        function formatPhoneNumber(phone) {
+            if (!phone) return '';
+            
+            // 숫자만 추출
+            const numbers = phone.replace(/[^0-9]/g, '');
+            
+            // 010으로 시작하는 11자리 숫자인지 확인
+            if (numbers.length === 11 && numbers.startsWith('010')) {
+                return numbers.replace(/(\d{3})(\d{4})(\d{4})/, '$1-$2-$3');
+            }
+            
+            // 기존 형식 유지
+            return phone;
+        }
+		
+        // 로그인 함수
+        function login() {
+            const password = document.getElementById('password').value;
+            if (password === 'student123') {
+                isAdmin = false;
+                showMenu();
+            } else if (password === 'admin456') {
+                isAdmin = true;
+                document.getElementById('adminBtn').classList.remove('hidden');
+                showMenu();
+            } else {
+                alert('비밀번호가 틀렸습니다.');
+            }
+        }
+        
+        // 화면 전환 함수들
+        function showMenu() {
+            hideAllSections();
+            document.querySelector('.menu-section').style.display = 'block';
+        }
+        
+        function showClinicApplication() {
+            hideAllSections();
+            document.querySelector('.clinic-application').style.display = 'block';
+            loadStudentList();
+            resetApplicationForm();
+        }
+        
+        function showClinicResults() {
+            hideAllSections();
+            document.querySelector('.clinic-results').style.display = 'block';
+        }
+        
+        function showAdminPanel() {
+            if (!isAdmin) {
+                alert('관리자 권한이 필요합니다.');
+                return;
+            }
+            hideAllSections();
+            document.querySelector('.admin-panel').style.display = 'block';
+            loadApplicationsList();
+            updateStudentCount();
+        }
+        
+        function hideAllSections() {
+            document.querySelector('.login-form').style.display = 'none';
+            document.querySelector('.menu-section').style.display = 'none';
+            document.querySelector('.clinic-application').style.display = 'none';
+            document.querySelector('.clinic-results').style.display = 'none';
+            document.querySelector('.admin-panel').style.display = 'none';
+        }
+		
+         // 학생 검색 함수
+		function searchStudents() {
+			const searchTerm = document.getElementById('studentSearch').value.toLowerCase().trim();
+			const studentItems = document.querySelectorAll('.student-item');
+			let visibleCount = 0;
+    
+			studentItems.forEach(item => {
+				const studentName = item.querySelector('strong').textContent.toLowerCase();
+				const studentInfo = item.textContent.toLowerCase(); // 전체 텍스트에서 검색
+        
+				if (searchTerm === '' || studentName.includes(searchTerm) || studentInfo.includes(searchTerm)) {
+					item.classList.remove('hidden');
+					visibleCount++;
+				} else {
+					item.classList.add('hidden');
+					item.classList.remove('selected');
+				}
+			});
+    
+    // 검색 결과가 없을 때 메시지 표시
+    let noResultsMsg = document.querySelector('.no-results');
+    if (visibleCount === 0 && searchTerm !== '') {
+        if (!noResultsMsg) {
+            noResultsMsg = document.createElement('div');
+            noResultsMsg.className = 'no-results';
+            noResultsMsg.textContent = '검색 결과가 없습니다.';
+            document.getElementById('studentList').appendChild(noResultsMsg);
+        }
+    } else {
+        if (noResultsMsg) {
+            noResultsMsg.remove();
+        }
+    }
+    
+    // 선택된 학생이 검색 결과에 없으면 선택 해제
+    if (selectedStudent) {
+        const selectedItem = document.querySelector('.student-item.selected');
+        if (selectedItem && selectedItem.classList.contains('hidden')) {
+            selectedStudent = null;
+            selectedItem.classList.remove('selected');
+        }
+    }
+}
+			
+        // 학생 목록 로드
+        function loadStudentList() {
+            const studentList = document.getElementById('studentList');
+            studentList.innerHTML = '';
+            
+            students.forEach((student, index) => {
+                const div = document.createElement('div');
+                div.className = 'student-item';
+                div.innerHTML = `<strong>${student.name}</strong><br>
+                               ${student.phone} | ${student.school} | ${student.grade}`;
+                div.onclick = () => selectStudentFromList(index);
+                studentList.appendChild(div);
+            });
+        }
+        
+        // 학생 선택
+        function selectStudentFromList(index) {
+            document.querySelectorAll('.student-item').forEach(item => item.classList.remove('selected'));
+            document.querySelectorAll('.student-item')[index].classList.add('selected');
+            selectedStudent = students[index];
+        }
+        
+        function selectStudent() {
+            if (!selectedStudent) {
+                alert('학생을 선택해주세요.');
+                return;
+            }
+            
+            document.getElementById('studentSelection').classList.add('hidden');
+            document.getElementById('timeSelection').classList.remove('hidden');
+            
+            document.getElementById('selectedStudentInfo').innerHTML = 
+                `<strong>${selectedStudent.name}</strong> | ${selectedStudent.phone} | ${selectedStudent.school} | ${selectedStudent.grade}`;
+        }
+        
+        // 시간 선택
+        function selectTime(element) {
+            document.querySelectorAll('.time-slot').forEach(slot => slot.classList.remove('selected'));
+            element.classList.add('selected');
+            selectedTime = element.dataset.time;
+        }
+        
+        // 신청 완료
+        function submitApplication() {
+            if (!selectedTime) {
+                alert('시간을 선택해주세요.');
+                return;
+            }
+            
+            const application = {
+                name: selectedStudent.name,
+                phone: selectedStudent.phone,
+                school: selectedStudent.school,
+                grade: selectedStudent.grade,
+                time: selectedTime,
+                date: new Date().toLocaleString('ko-KR')
+            };
+            
+            applications.push(application);
+            
+            alert(`클리닉 신청이 완료되었습니다! 학생: ${application.name} 시간: ${application.time}`);
+            
+            showMenu();
+        }
+        
+        // 신청 폼 리셋
+        function resetApplicationForm() {
+			selectedStudent = null;
+			selectedTime = null;
+			document.getElementById('studentSelection').classList.remove('hidden');
+			document.getElementById('timeSelection').classList.add('hidden');
+			document.querySelectorAll('.student-item').forEach(item => item.classList.remove('selected'));
+			document.querySelectorAll('.time-slot').forEach(slot => slot.classList.remove('selected'));
+    
+			// 검색창 초기화 추가
+			const searchInput = document.getElementById('studentSearch');
+			if (searchInput) {
+				searchInput.value = '';
+				searchStudents(); // 검색 결과 초기화
+			}
+		}
+        
+        function goBackToStudentSelection() {
+            document.getElementById('studentSelection').classList.remove('hidden');
+            document.getElementById('timeSelection').classList.add('hidden');
+            selectedStudent = null;
+            selectedTime = null;
+        }
+        
+        // 관리자 기능들
+        function loadApplicationsList() {
+            const applicationsList = document.getElementById('applicationsList');
+            applicationsList.innerHTML = '<h4>현재 신청 현황:</h4>';
+            
+            if (applications.length === 0) {
+                applicationsList.innerHTML += '<p>아직 신청된 클리닉이 없습니다.</p>';
+                return;
+            }
+            
+            applications.forEach((app, index) => {
+                const div = document.createElement('div');
+                div.innerHTML = `
+                    <div style="border: 1px solid #ddd; padding: 10px; margin: 5px 0; border-radius: 5px;">
+                        <strong>${app.name}</strong> | ${app.phone} | ${app.school} | ${app.grade}<br>
+                        <span style="color: #667eea;">클리닉 시간: ${app.time}</span><br>
+                        <small>신청일: ${app.date}</small>
+                    </div>
+                `;
+                applicationsList.appendChild(div);
+            });
+        }
+        
+        function updateStudentCount() {
+            document.getElementById('studentCount').textContent = students.length;
+        }
+        
+        function showCurrentStudents() {
+            const display = document.getElementById('studentListDisplay');
+            const isVisible = display.style.display !== 'none';
+            
+            if (isVisible) {
+                display.style.display = 'none';
+                return;
+            }
+            
+            display.innerHTML = '';
+            students.forEach((student, index) => {
+                const div = document.createElement('div');
+                div.innerHTML = `
+                    <div style="padding: 8px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <strong>${student.name}</strong> | ${student.phone} | ${student.school} | ${student.grade}
+                        </div>
+                        <button onclick="removeStudent(${index})" style="background: #ff4757; color: white; border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 12px;">삭제</button>
+                    </div>
+                `;
+                display.appendChild(div);
+            });
+            
+            display.style.display = 'block';
+        }
+        
+        function removeStudent(index) {
+            if (confirm(`${students[index].name} 학생을 삭제하시겠습니까?`)) {
+                students.splice(index, 1);
+                updateStudentCount();
+                showCurrentStudents(); // 목록 새로고침
+                
+                // 만약 현재 신청 페이지에 있다면 학생 목록도 새로고침
+                if (document.querySelector('.clinic-application').style.display === 'block') {
+                    loadStudentList();
+                }
+            }
+        }
+        
+        function downloadApplications() {
+            if (applications.length === 0) {
+                alert('다운로드할 신청 내역이 없습니다.');
+                return;
+            }
+            
+            // BOM(Byte Order Mark)을 추가하여 Excel에서 UTF-8을 인식하도록 함
+            const BOM = "\uFEFF";
+            let csvContent = BOM + "이름,전화번호,학교,학년,클리닉시간,신청일\n";
+            applications.forEach(app => {
+                csvContent += `${app.name},${app.phone},${app.school},${app.grade},${app.time},${app.date}\n`;
+            });
+            
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = '클리닉_신청_내역.csv';
+            link.click();
+        }
+        
+        function uploadStudentData() {
+            const fileInput = document.getElementById('studentFile');
+            const file = fileInput.files[0];
+            
+            if (!file) {
+                alert('파일을 선택해주세요.');
+                return;
+            }
+            
+            // 파일 확장자 검사
+            const fileName = file.name.toLowerCase();
+            if (!fileName.endsWith('.xlsx') && !fileName.endsWith('.xls')) {
+                alert('엑셀 파일(.xlsx, .xls)만 업로드 가능합니다.');
+                return;
+            }
+            
+            const reader = new FileReader();
+            
+            reader.onload = function(e) {
+                try {
+                    // 엑셀 파일 읽기
+                    const data = new Uint8Array(e.target.result);
+                    const workbook = XLSX.read(data, { type: 'array' });
+                    
+                    // 첫 번째 시트 선택
+                    const firstSheetName = workbook.SheetNames[0];
+                    const worksheet = workbook.Sheets[firstSheetName];
+                    
+                    // 시트를 JSON으로 변환
+                    const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+                    
+                    if (jsonData.length < 2) {
+                        alert('파일에 데이터가 없습니다. 최소한 헤더와 1개 이상의 데이터 행이 필요합니다.');
+                        return;
+                    }
+                    
+                    // 헤더 확인
+                    const headers = jsonData[0];
+                    const expectedHeaders = ['이름', '전화번호', '학교', '학년'];
+                    
+                    // 헤더 검증
+                    let headerValid = true;
+                    for (let i = 0; i < expectedHeaders.length; i++) {
+                        if (!headers[i] || headers[i].toString().trim() !== expectedHeaders[i]) {
+                            headerValid = false;
+                            break;
+                        }
+                    }
+                    
+                    if (!headerValid) {
+                        alert('엑셀 파일의 헤더가 올바르지 않습니다.\\n올바른 순서: 이름, 전화번호, 학교, 학년');
+                        return;
+                    }
+                    
+                    // 기존 학생 데이터 백업 (실패 시 복구용)
+                    const backupStudents = [...students];
+                    
+                    // 새로운 학생 데이터 생성
+                    const newStudents = [];
+                    let validRowCount = 0;
+                    let invalidRows = [];
+                    
+                    for (let i = 1; i < jsonData.length; i++) {
+                        const row = jsonData[i];
+                        
+                        // 빈 행 건너뛰기
+                        if (!row || row.every(cell => !cell || cell.toString().trim() === '')) {
+                            continue;
+                        }
+                        
+                        // 데이터 검증
+                        if (row.length < 4 || !row[0] || !row[1] || !row[2] || !row[3]) {
+                            invalidRows.push(i + 1);
+                            continue;
+                        }
+                        
+                        const student = {
+                            name: row[0].toString().trim(),
+                            phone: row[1].toString().trim(),
+                            school: row[2].toString().trim(),
+                            grade: row[3].toString().trim()
+                        };
+                        
+                        // 전화번호 형식 간단 검증
+                        if (!/^010-\\d{4}-\\d{4}$/.test(student.phone)) {
+                            // 자동 포맷팅 시도
+                            const phoneNumbers = student.phone.replace(/[^0-9]/g, '');
+                            if (phoneNumbers.length === 11 && phoneNumbers.startsWith('010')) {
+                                student.phone = phoneNumbers.replace(/(\\d{3})(\\d{4})(\\d{4})/, '$1-$2-$3');
+                            } else {
+                                invalidRows.push(i + 1);
+                                continue;
+                            }
+                        }
+                        
+                        newStudents.push(student);
+                        validRowCount++;
+                    }
+                    
+                    // 결과 확인
+                    if (newStudents.length === 0) {
+                        alert('유효한 학생 데이터가 없습니다.');
+                        return;
+                    }
+                    
+                    // 사용자에게 확인받기
+                    let confirmMessage = `총 ${validRowCount}명의 학생 데이터를 업로드하시겠습니까?`;
+                    if (invalidRows.length > 0) {
+                        confirmMessage += `\\n\\n경고: ${invalidRows.length}개 행에서 오류가 발견되어 제외됩니다.\\n오류 행 번호: ${invalidRows.join(', ')}`;
+                    }
+                    
+                    if (confirm(confirmMessage)) {
+                        // 기존 데이터 교체
+                        students = newStudents;
+                        
+                        // 성공 메시지
+                        alert(`학생 데이터 업로드 완료! 성공: ${validRowCount}명 실패: ${invalidRows.length}명`);
+                        
+                        // 파일 입력 초기화
+                        fileInput.value = '';
+                        
+                        // 학생 목록 새로고침 (만약 현재 신청 페이지에 있다면)
+                        if (document.querySelector('.clinic-application').style.display === 'block') {
+                            loadStudentList();
+                        }
+                    }
+                    
+                } catch (error) {
+                    console.error('파일 처리 중 오류:', error);
+                    alert('파일 처리 중 오류가 발생했습니다. 파일 형식을 확인해주세요.');
+                }
+            };
+            
+            reader.onerror = function() {
+                alert('파일을 읽는 중 오류가 발생했습니다.');
+            };
+            
+            // 파일을 ArrayBuffer로 읽기
+            reader.readAsArrayBuffer(file);
+        }
+        
+        function downloadStudentTemplate() {
+            // BOM(Byte Order Mark)을 추가하여 Excel에서 UTF-8을 인식하도록 함
+            const BOM = "\uFEFF";
+            let csvContent = BOM + "이름,전화번호,학교,학년\n";
+            csvContent += "홍길동,010-1234-5678,서울고,2학년\n";
+            csvContent += "김영희,010-2345-6789,부산고,3학년\n";
+            
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = '학생_데이터_템플릿.csv';
+            link.click();
+        }
+    </script>
+</body>
+</html>
