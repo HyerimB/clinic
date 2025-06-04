@@ -509,17 +509,18 @@
         }
         
         function selectStudent() {
-            if (!selectedStudent) {
-                alert('학생을 선택해주세요.');
-                return;
-            }
-            
-            document.getElementById('studentSelection').classList.add('hidden');
-            document.getElementById('timeSelection').classList.remove('hidden');
-            
-            document.getElementById('selectedStudentInfo').innerHTML = 
-                `<strong>${selectedStudent.name}</strong> | ${selectedStudent.phone} | ${selectedStudent.school} | ${selectedStudent.grade}`;
-        }
+    		if (!selectedStudent) {
+        		alert('학생을 선택해주세요.');
+        	return;
+    		}
+
+    		document.getElementById('studentSelection').classList.add('hidden');
+    		document.getElementById('timeSelection').classList.remove('hidden');
+
+    		document.getElementById('selectedStudentInfo').innerHTML = 
+        		`<strong>${selectedStudent.name}</strong> | ${selectedStudent.school} | ${selectedStudent.grade}`;
+		}
+
         
         // 시간 선택
         function selectTime(element) {
