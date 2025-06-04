@@ -419,23 +419,47 @@
         }
 		
          // 학생 검색 함수
-		function searchStudents() {
-			const searchTerm = document.getElementById('studentSearch').value.toLowerCase().trim();
-			const studentItems = document.querySelectorAll('.student-item');
-			let visibleCount = 0;
-    
-			studentItems.forEach(item => {
-				const studentName = item.querySelector('strong').textContent.toLowerCase();
-				const studentInfo = item.textContent.toLowerCase(); // 전체 텍스트에서 검색
-        
-				if (searchTerm === '' || studentName.includes(searchTerm) || studentInfo.includes(searchTerm)) {
-					item.classList.remove('hidden');
-					visibleCount++;
-				} else {
-					item.classList.add('hidden');
-					item.classList.remove('selected');
-				}
-			});
+	function searchStudents() {
+    		const searchTerm = document.getElementById('studentSearch').value.toLowerCase().trim();
+    		const studentItems = document.querySelectorAll('.student-item');
+    		let visibleCount = 0;
+
+    		studentItems.forEach(item => {
+        		const studentName = item.querySelector('strong').textContent.toLowerCase();
+        		const studentInfo = item.textContent.toLowerCase();
+
+        		if (searchTerm === '' || studentName.includes(searchTerm) || studentInfo.includes(searchTerm)) {
+            			item.classList.remove('hidden');
+            			visibleCount++;
+        		} else {
+            			item.classList.add('hidden');
+            			item.classList.remove('selected');
+        			}
+    			});
+
+    		let noResultsMsg = document.querySelector('.no-results');
+    		if (visibleCount === 0 && searchTerm !== '') {
+        		if (!noResultsMsg) {
+            		noResultsMsg = document.createElement('div');
+            		noResultsMsg.className = 'no-results';
+            		noResultsMsg.textContent = '검색 결과가 없습니다.';
+            		document.getElementById('studentList').appendChild(noResultsMsg);
+        		}
+    		} else {
+        		if (noResultsMsg) {
+            		noResultsMsg.remove();
+        		}
+    		}
+
+    		if (selectedStudent) {
+        		const selectedItem = document.querySelector('.student-item.selected');
+        		if (selectedItem && selectedItem.classList.contains('hidden')) {
+            		selectedStudent = null;
+            		selectedItem.classList.remove('selected');
+        		}
+    		}
+	}
+
     
     // 검색 결과가 없을 때 메시지 표시
     let noResultsMsg = document.querySelector('.no-results');
@@ -463,19 +487,19 @@
 }
 			
         // 학생 목록 로드
-        function loadStudentList() {
-            const studentList = document.getElementById('studentList');
-            studentList.innerHTML = '';
-            
-            students.forEach((student, index) => {
-                const div = document.createElement('div');
-                div.className = 'student-item';
-                div.innerHTML = `<strong>${student.name}</strong><br>
-                               ${student.phone} | ${student.school} | ${student.grade}`;
-                div.onclick = () => selectStudentFromList(index);
-                studentList.appendChild(div);
-            });
-        }
+       function loadStudentList() {
+    	const studentList = document.getElementById('studentList');
+    	studentList.innerHTML = '';
+    
+    	students.forEach((student, index) => {
+        	const div = document.createElement('div');
+        	div.className = 'student-item hidden';  // ← 처음엔 hidden 처리
+        	div.innerHTML = `<strong>${student.name}</strong><br>
+                       ${student.phone} | ${student.school} | ${student.grade}`;
+        	div.onclick = () => selectStudentFromList(index);
+        	studentList.appendChild(div);
+    		});
+	}
         
         // 학생 선택
         function selectStudentFromList(index) {
