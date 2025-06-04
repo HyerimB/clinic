@@ -419,47 +419,23 @@
         }
 		
          // 학생 검색 함수
-	function searchStudents() {
-    		const searchTerm = document.getElementById('studentSearch').value.toLowerCase().trim();
-    		const studentItems = document.querySelectorAll('.student-item');
-    		let visibleCount = 0;
-
-    		studentItems.forEach(item => {
-        		const studentName = item.querySelector('strong').textContent.toLowerCase();
-        		const studentInfo = item.textContent.toLowerCase();
-
-        		if (searchTerm === '' || studentName.includes(searchTerm) || studentInfo.includes(searchTerm)) {
-            			item.classList.remove('hidden');
-            			visibleCount++;
-        		} else {
-            			item.classList.add('hidden');
-            			item.classList.remove('selected');
-        			}
-    			});
-
-    		let noResultsMsg = document.querySelector('.no-results');
-    		if (visibleCount === 0 && searchTerm !== '') {
-        		if (!noResultsMsg) {
-            		noResultsMsg = document.createElement('div');
-            		noResultsMsg.className = 'no-results';
-            		noResultsMsg.textContent = '검색 결과가 없습니다.';
-            		document.getElementById('studentList').appendChild(noResultsMsg);
-        		}
-    		} else {
-        		if (noResultsMsg) {
-            		noResultsMsg.remove();
-        		}
-    		}
-
-    		if (selectedStudent) {
-        		const selectedItem = document.querySelector('.student-item.selected');
-        		if (selectedItem && selectedItem.classList.contains('hidden')) {
-            		selectedStudent = null;
-            		selectedItem.classList.remove('selected');
-        		}
-    		}
-	}
-
+		function searchStudents() {
+			const searchTerm = document.getElementById('studentSearch').value.toLowerCase().trim();
+			const studentItems = document.querySelectorAll('.student-item');
+			let visibleCount = 0;
+    
+			studentItems.forEach(item => {
+				const studentName = item.querySelector('strong').textContent.toLowerCase();
+				const studentInfo = item.textContent.toLowerCase(); // 전체 텍스트에서 검색
+        
+				if (searchTerm === '' || studentName.includes(searchTerm) || studentInfo.includes(searchTerm)) {
+					item.classList.remove('hidden');
+					visibleCount++;
+				} else {
+					item.classList.add('hidden');
+					item.classList.remove('selected');
+				}
+			});
     
     // 검색 결과가 없을 때 메시지 표시
     let noResultsMsg = document.querySelector('.no-results');
@@ -487,19 +463,19 @@
 }
 			
         // 학생 목록 로드
-       function loadStudentList() {
-    	const studentList = document.getElementById('studentList');
-    	studentList.innerHTML = '';
-    
-    	students.forEach((student, index) => {
-        	const div = document.createElement('div');
-        	div.className = 'student-item hidden';  // ← 처음엔 hidden 처리
-        	div.innerHTML = `<strong>${student.name}</strong><br>
-                       ${student.phone} | ${student.school} | ${student.grade}`;
-        	div.onclick = () => selectStudentFromList(index);
-        	studentList.appendChild(div);
-    		});
-	}
+        function loadStudentList() {
+            const studentList = document.getElementById('studentList');
+            studentList.innerHTML = '';
+            
+            students.forEach((student, index) => {
+                const div = document.createElement('div');
+                div.className = 'student-item';
+                div.innerHTML = <strong>${student.name}</strong><br>
+                               ${student.phone} | ${student.school} | ${student.grade};
+                div.onclick = () => selectStudentFromList(index);
+                studentList.appendChild(div);
+            });
+        }
         
         // 학생 선택
         function selectStudentFromList(index) {
@@ -509,18 +485,17 @@
         }
         
         function selectStudent() {
-    		if (!selectedStudent) {
-        		alert('학생을 선택해주세요.');
-        	return;
-    		}
-
-    		document.getElementById('studentSelection').classList.add('hidden');
-    		document.getElementById('timeSelection').classList.remove('hidden');
-
-    		document.getElementById('selectedStudentInfo').innerHTML = 
-        		`<strong>${selectedStudent.name}</strong> | ${selectedStudent.school} | ${selectedStudent.grade}`;
-		}
-
+            if (!selectedStudent) {
+                alert('학생을 선택해주세요.');
+                return;
+            }
+            
+            document.getElementById('studentSelection').classList.add('hidden');
+            document.getElementById('timeSelection').classList.remove('hidden');
+            
+            document.getElementById('selectedStudentInfo').innerHTML = 
+                <strong>${selectedStudent.name}</strong> | ${selectedStudent.phone} | ${selectedStudent.school} | ${selectedStudent.grade};
+        }
         
         // 시간 선택
         function selectTime(element) {
@@ -547,7 +522,7 @@
             
             applications.push(application);
             
-            alert(`클리닉 신청이 완료되었습니다! 학생: ${application.name} 시간: ${application.time}`);
+            alert(클리닉 신청이 완료되었습니다! 학생: ${application.name} 시간: ${application.time});
             
             showMenu();
         }
@@ -588,13 +563,13 @@
             
             applications.forEach((app, index) => {
                 const div = document.createElement('div');
-                div.innerHTML = `
+                div.innerHTML = 
                     <div style="border: 1px solid #ddd; padding: 10px; margin: 5px 0; border-radius: 5px;">
                         <strong>${app.name}</strong> | ${app.phone} | ${app.school} | ${app.grade}<br>
                         <span style="color: #667eea;">클리닉 시간: ${app.time}</span><br>
                         <small>신청일: ${app.date}</small>
                     </div>
-                `;
+                ;
                 applicationsList.appendChild(div);
             });
         }
@@ -615,14 +590,14 @@
             display.innerHTML = '';
             students.forEach((student, index) => {
                 const div = document.createElement('div');
-                div.innerHTML = `
+                div.innerHTML = 
                     <div style="padding: 8px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center;">
                         <div>
                             <strong>${student.name}</strong> | ${student.phone} | ${student.school} | ${student.grade}
                         </div>
                         <button onclick="removeStudent(${index})" style="background: #ff4757; color: white; border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 12px;">삭제</button>
                     </div>
-                `;
+                ;
                 display.appendChild(div);
             });
             
@@ -630,7 +605,7 @@
         }
         
         function removeStudent(index) {
-            if (confirm(`${students[index].name} 학생을 삭제하시겠습니까?`)) {
+            if (confirm(${students[index].name} 학생을 삭제하시겠습니까?)) {
                 students.splice(index, 1);
                 updateStudentCount();
                 showCurrentStudents(); // 목록 새로고침
@@ -652,7 +627,7 @@
             const BOM = "\uFEFF";
             let csvContent = BOM + "이름,전화번호,학교,학년,클리닉시간,신청일\n";
             applications.forEach(app => {
-                csvContent += `${app.name},${app.phone},${app.school},${app.grade},${app.time},${app.date}\n`;
+                csvContent += ${app.name},${app.phone},${app.school},${app.grade},${app.time},${app.date}\n;
             });
             
             const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
@@ -768,9 +743,9 @@
                     }
                     
                     // 사용자에게 확인받기
-                    let confirmMessage = `총 ${validRowCount}명의 학생 데이터를 업로드하시겠습니까?`;
+                    let confirmMessage = 총 ${validRowCount}명의 학생 데이터를 업로드하시겠습니까?;
                     if (invalidRows.length > 0) {
-                        confirmMessage += `\\n\\n경고: ${invalidRows.length}개 행에서 오류가 발견되어 제외됩니다.\\n오류 행 번호: ${invalidRows.join(', ')}`;
+                        confirmMessage += \\n\\n경고: ${invalidRows.length}개 행에서 오류가 발견되어 제외됩니다.\\n오류 행 번호: ${invalidRows.join(', ')};
                     }
                     
                     if (confirm(confirmMessage)) {
@@ -778,7 +753,7 @@
                         students = newStudents;
                         
                         // 성공 메시지
-                        alert(`학생 데이터 업로드 완료! 성공: ${validRowCount}명 실패: ${invalidRows.length}명`);
+                        alert(학생 데이터 업로드 완료! 성공: ${validRowCount}명 실패: ${invalidRows.length}명);
                         
                         // 파일 입력 초기화
                         fileInput.value = '';
