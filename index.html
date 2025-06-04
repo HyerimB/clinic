@@ -276,8 +276,8 @@
                         <div class="time-slot" data-time="토요일 1시" onclick="selectTime(this)">토요일 1시</div>
                         <div class="time-slot" data-time="토요일 2시" onclick="selectTime(this)">토요일 2시</div>
                         <div class="time-slot" data-time="토요일 3시" onclick="selectTime(this)">토요일 3시</div>
-			<div class="time-slot" data-time="토요일 4시" onclick="selectTime(this)">토요일 4시</div>
-			<div class="time-slot" data-time="X" onclick="selectTime(this)">클리닉 불가</div>
+						<div class="time-slot" data-time="토요일 4시" onclick="selectTime(this)">토요일 4시</div>
+						<div class="time-slot" data-time="X" onclick="selectTime(this)">클리닉 불가</div>
                     </div>
                 </div>
                 
@@ -470,8 +470,8 @@
             students.forEach((student, index) => {
                 const div = document.createElement('div');
                 div.className = 'student-item';
-                div.innerHTML = <strong>${student.name}</strong><br>
-                               ${student.phone} | ${student.school} | ${student.grade};
+                div.innerHTML = `<strong>${student.name}</strong><br>
+                               ${student.phone} | ${student.school} | ${student.grade}`;
                 div.onclick = () => selectStudentFromList(index);
                 studentList.appendChild(div);
             });
@@ -494,7 +494,7 @@
             document.getElementById('timeSelection').classList.remove('hidden');
             
             document.getElementById('selectedStudentInfo').innerHTML = 
-                <strong>${selectedStudent.name}</strong> | ${selectedStudent.phone} | ${selectedStudent.school} | ${selectedStudent.grade};
+                `<strong>${selectedStudent.name}</strong> | ${selectedStudent.phone} | ${selectedStudent.school} | ${selectedStudent.grade}`;
         }
         
         // 시간 선택
@@ -522,7 +522,7 @@
             
             applications.push(application);
             
-            alert(클리닉 신청이 완료되었습니다! 학생: ${application.name} 시간: ${application.time});
+            alert(`클리닉 신청이 완료되었습니다! 학생: ${application.name} 시간: ${application.time}`);
             
             showMenu();
         }
@@ -563,13 +563,13 @@
             
             applications.forEach((app, index) => {
                 const div = document.createElement('div');
-                div.innerHTML = 
+                div.innerHTML = `
                     <div style="border: 1px solid #ddd; padding: 10px; margin: 5px 0; border-radius: 5px;">
                         <strong>${app.name}</strong> | ${app.phone} | ${app.school} | ${app.grade}<br>
                         <span style="color: #667eea;">클리닉 시간: ${app.time}</span><br>
                         <small>신청일: ${app.date}</small>
                     </div>
-                ;
+                `;
                 applicationsList.appendChild(div);
             });
         }
@@ -590,14 +590,14 @@
             display.innerHTML = '';
             students.forEach((student, index) => {
                 const div = document.createElement('div');
-                div.innerHTML = 
+                div.innerHTML = `
                     <div style="padding: 8px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center;">
                         <div>
                             <strong>${student.name}</strong> | ${student.phone} | ${student.school} | ${student.grade}
                         </div>
                         <button onclick="removeStudent(${index})" style="background: #ff4757; color: white; border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 12px;">삭제</button>
                     </div>
-                ;
+                `;
                 display.appendChild(div);
             });
             
@@ -605,7 +605,7 @@
         }
         
         function removeStudent(index) {
-            if (confirm(${students[index].name} 학생을 삭제하시겠습니까?)) {
+            if (confirm(`${students[index].name} 학생을 삭제하시겠습니까?`)) {
                 students.splice(index, 1);
                 updateStudentCount();
                 showCurrentStudents(); // 목록 새로고침
@@ -627,7 +627,7 @@
             const BOM = "\uFEFF";
             let csvContent = BOM + "이름,전화번호,학교,학년,클리닉시간,신청일\n";
             applications.forEach(app => {
-                csvContent += ${app.name},${app.phone},${app.school},${app.grade},${app.time},${app.date}\n;
+                csvContent += `${app.name},${app.phone},${app.school},${app.grade},${app.time},${app.date}\n`;
             });
             
             const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
@@ -743,9 +743,9 @@
                     }
                     
                     // 사용자에게 확인받기
-                    let confirmMessage = 총 ${validRowCount}명의 학생 데이터를 업로드하시겠습니까?;
+                    let confirmMessage = `총 ${validRowCount}명의 학생 데이터를 업로드하시겠습니까?`;
                     if (invalidRows.length > 0) {
-                        confirmMessage += \\n\\n경고: ${invalidRows.length}개 행에서 오류가 발견되어 제외됩니다.\\n오류 행 번호: ${invalidRows.join(', ')};
+                        confirmMessage += `\\n\\n경고: ${invalidRows.length}개 행에서 오류가 발견되어 제외됩니다.\\n오류 행 번호: ${invalidRows.join(', ')}`;
                     }
                     
                     if (confirm(confirmMessage)) {
@@ -753,7 +753,7 @@
                         students = newStudents;
                         
                         // 성공 메시지
-                        alert(학생 데이터 업로드 완료! 성공: ${validRowCount}명 실패: ${invalidRows.length}명);
+                        alert(`학생 데이터 업로드 완료! 성공: ${validRowCount}명 실패: ${invalidRows.length}명`);
                         
                         // 파일 입력 초기화
                         fileInput.value = '';
