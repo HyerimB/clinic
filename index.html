@@ -164,13 +164,15 @@
             border-radius: 10px;
             margin: 20px 0;
         }
-        
-        .student-item {
-            padding: 10px;
-            border-bottom: 1px solid #e1e5e9;
-            cursor: pointer;
-            transition: background 0.3s ease;
-        }
+	    
+	.student-item {
+    		padding: 10px;
+    		border: 1px solid ##e1e5e9;
+    		border-radius: 5px;
+    		margin: 5px 0;
+    		cursor: pointer;
+    		transition: background-color 0.2s;
+	}
         
         .student-item:hover {
             background: #f8f9ff;
@@ -193,20 +195,20 @@
             margin: 10px 0;
         }
         
-        .hidden {
-            display: none !important;
-        }
-		
-		.no-results {
-			padding: 20px;
-			text-align: center;
-			color: #666;
-			font-style: italic;
-		}
+        .student-item.hidden {
+    		display: none;
+	}
 
-.student-item.hidden {
-    display: none !important;
-}
+	.no-results {
+    		padding: 20px;
+    		text-align: center;
+    		color: #666;
+    		font-style: italic;
+	}
+
+	.student-item.hidden {
+    		display: none !important;
+	}
     </style>
 </head>
 <body>
@@ -391,7 +393,6 @@ const apiUrl = "https://script.google.com/macros/u/1/s/AKfycbyUbDkRkHWYzc-xLxorp
         function showClinicApplication() {
             hideAllSections();
             document.querySelector('.clinic-application').style.display = 'block';
-            loadStudentList();
             resetApplicationForm();
         }
         
@@ -419,24 +420,54 @@ const apiUrl = "https://script.google.com/macros/u/1/s/AKfycbyUbDkRkHWYzc-xLxorp
             document.querySelector('.admin-panel').style.display = 'none';
         }
 		
-         // 학생 검색 함수
+		// 학생 검색 함수
 		function searchStudents() {
-			const searchTerm = document.getElementById('studentSearch').value.toLowerCase().trim();
-			const studentItems = document.querySelectorAll('.student-item');
-			let visibleCount = 0;
+    			loadStudentList(); // 검색할 때마다 목록 새로 로드
+		}
+
+			// 학생 목록 로드 (검색 시에만 표시)
+			function loadStudentList() {
+    			const studentList = document.getElementById('studentList');
+    			studentList.innerHTML = ''; // 기존 목록 초기화
     
-			studentItems.forEach(item => {
-				const studentName = item.querySelector('strong').textContent.toLowerCase();
-				const studentInfo = item.textContent.toLowerCase(); // 전체 텍스트에서 검색
+    			// 검색어가 있을 때만 목록 표시
+    			const searchTerm = document.getElementById('studentSearch').value.toLowerCase().trim();
+    			if (searchTerm === '') {
+        			return; // 검색어 없으면 목록 숨김
+    			}
+    
+    			let hasResults = false;
+    
+    			students.forEach((student, index) => {
+        			const studentName = student.name.toLowerCase();
+        			const studentSchool = student.school.toLowerCase();
+        			const studentGrade = student.grade.toLowerCase();
         
-				if (searchTerm === '' || studentName.includes(searchTerm) || studentInfo.includes(searchTerm)) {
-					item.classList.remove('hidden');
-					visibleCount++;
-				} else {
-					item.classList.add('hidden');
-					item.classList.remove('selected');
-				}
-			});
+        			// 이름, 학교, 학년에서 검색
+        			if (studentName.includes(searchTerm) || 
+            			studentSchool.includes(searchTerm) || 
+            			studentGrade.includes(searchTerm)) {
+            
+            			const div = document.createElement('div');
+            			div.className = 'student-item';
+            			div.onclick = () => selectStudentFromList(index);
+            			div.innerHTML = `
+                			<strong>${student.name}</strong><br>
+                			<small>${student.school} | ${student.grade}</small>
+            `			;
+            			studentList.appendChild(div);
+            			hasResults = true;
+        			}
+    			});
+    
+    			// 검색 결과가 없을 때
+    			if (!hasResults && searchTerm !== '') {
+        			const noResultsDiv = document.createElement('div');
+        			noResultsDiv.className = 'no-results';
+        			noResultsDiv.textContent = '검색 결과가 없습니다.';
+        			studentList.appendChild(noResultsDiv);
+    			}
+		}
     
     // 검색 결과가 없을 때 메시지 표시
     let noResultsMsg = document.querySelector('.no-results');
@@ -557,20 +588,20 @@ const apiUrl = "https://script.google.com/macros/u/1/s/AKfycbyUbDkRkHWYzc-xLxorp
         
         // 신청 폼 리셋
         function resetApplicationForm() {
-			selectedStudent = null;
-			selectedTime = null;
-			document.getElementById('studentSelection').classList.remove('hidden');
-			document.getElementById('timeSelection').classList.add('hidden');
-			document.querySelectorAll('.student-item').forEach(item => item.classList.remove('selected'));
-			document.querySelectorAll('.time-slot').forEach(slot => slot.classList.remove('selected'));
+    		selectedStudent = null;
+    		selectedTime = null;
+    		document.getElementById('studentSelection').classList.remove('hidden');
+    		document.getElementById('timeSelection').classList.add('hidden');
+    		document.querySelectorAll('.student-item').forEach(item => item.classList.remove('selected'));
+    		document.querySelectorAll('.time-slot').forEach(slot => slot.classList.remove('selected'));
     
-			// 검색창 초기화 추가
-			const searchInput = document.getElementById('studentSearch');
-			if (searchInput) {
-				searchInput.value = '';
-				searchStudents(); // 검색 결과 초기화
-			}
-		}
+    	// 검색창 초기화 및 학생 목록 숨기기
+    	const searchInput = document.getElementById('studentSearch');
+    		if (searchInput) {
+        	searchInput.value = '';
+        	document.getElementById('studentList').innerHTML = ''; // 목록 완전히 비우기
+    		}
+	}
         
         function goBackToStudentSelection() {
             document.getElementById('studentSelection').classList.remove('hidden');
