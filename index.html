@@ -111,6 +111,10 @@
             color: white;
         }
         
+        .hidden {
+            display: none;
+        }
+        
         .time-slots {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
@@ -128,14 +132,14 @@
         }
         
         .time-slot:hover {
-            border-color: e1e5e9;
+            border-color: #667eea;
             background: #f8f9ff;
         }
         
         .time-slot.selected {
-            background: linear-gradient(45deg, #e1e5e9, #1e3a5f);
+            background: linear-gradient(45deg, #667eea, #1e3a5f);
             color: white;
-            border-color: #e1e5e9;
+            border-color: #667eea;
         }
         
         .time-slot.unavailable {
@@ -164,15 +168,15 @@
             border-radius: 10px;
             margin: 20px 0;
         }
-	    
-	.student-item {
-    		padding: 10px;
-    		border: 1px solid ##e1e5e9;
-    		border-radius: 5px;
-    		margin: 5px 0;
-    		cursor: pointer;
-    		transition: background-color 0.2s;
-	}
+        
+        .student-item {
+            padding: 10px;
+            border-bottom: 1px solid #e1e5e9;
+            border-radius: 5px;
+            margin: 5px 0;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
         
         .student-item:hover {
             background: #f8f9ff;
@@ -194,21 +198,17 @@
         .file-input {
             margin: 10px 0;
         }
-        
+
         .student-item.hidden {
-    		display: none;
-	}
+            display: none;
+        }
 
-	.no-results {
-    		padding: 20px;
-    		text-align: center;
-    		color: #666;
-    		font-style: italic;
-	}
-
-	.student-item.hidden {
-    		display: none !important;
-	}
+        .no-results {
+            padding: 20px;
+            text-align: center;
+            color: #666;
+            font-style: italic;
+        }
     </style>
 </head>
 <body>
@@ -237,18 +237,17 @@
             <h2>클리닉 신청</h2>
             
             <div id="studentSelection">
-				<div class="input-group">
-					<label>학생 정보를 선택하세요</label>
-					<!-- 검색 입력창 추가 -->
-					<input type="text" id="studentSearch" placeholder="학생 이름을 검색하세요..." 
-						style="margin-bottom: 10px; padding: 10px; border: 2px solid #e1e5e9; border-radius: 8px; width: 100%; box-sizing: border-box;"
-						oninput="searchStudents()">
-					<div class="student-list" id="studentList">
-						<!-- 학생 목록이 여기에 동적으로 추가됩니다 -->
-					</div>
-				</div>
-				<button class="btn" onclick="selectStudent()">선택</button>
-			</div>
+                <div class="input-group">
+                    <label>학생 정보를 선택하세요</label>
+                    <input type="text" id="studentSearch" placeholder="학생 이름을 검색하세요..." 
+                        style="margin-bottom: 10px; padding: 10px; border: 2px solid #e1e5e9; border-radius: 8px; width: 100%; box-sizing: border-box;"
+                        oninput="searchStudents()">
+                    <div class="student-list" id="studentList">
+                        <!-- 학생 목록이 여기에 동적으로 추가됩니다 -->
+                    </div>
+                </div>
+                <button class="btn" onclick="selectStudent()">선택</button>
+            </div>
             
             <div id="timeSelection" class="hidden">
                 <div class="input-group">
@@ -278,8 +277,8 @@
                         <div class="time-slot" data-time="토요일 1시" onclick="selectTime(this)">토요일 1시</div>
                         <div class="time-slot" data-time="토요일 2시" onclick="selectTime(this)">토요일 2시</div>
                         <div class="time-slot" data-time="토요일 3시" onclick="selectTime(this)">토요일 3시</div>
-			<div class="time-slot" data-time="토요일 4시" onclick="selectTime(this)">토요일 4시</div>
-			<div class="time-slot" data-time="X" onclick="selectTime(this)">클리닉 불가</div>
+                        <div class="time-slot" data-time="토요일 4시" onclick="selectTime(this)">토요일 4시</div>
+                        <div class="time-slot" data-time="X" onclick="selectTime(this)">클리닉 불가</div>
                     </div>
                 </div>
                 
@@ -337,21 +336,21 @@
         let selectedTime = null;
         let isAdmin = false;
 
-const apiUrl = "https://script.google.com/macros/u/1/s/AKfycbyUbDkRkHWYzc-xLxorpcynDpbTE27yICOGiO4m3QeprFgaTADGYYbOEk3llwSrGGfl/exec";
-		
-		document.addEventListener('DOMContentLoaded', function() {
-    const passwordInput = document.querySelector('input[placeholder="비밀번호"]');
-    const loginButton = document.querySelector('button'); // 로그인 버튼
-    
-    if (passwordInput && loginButton) {
-        passwordInput.addEventListener('keydown', function(event) {
-            if (event.key === 'Enter') {
-                event.preventDefault(); // 기본 동작 방지
-                loginButton.click(); // 로그인 버튼 클릭 실행
+        const apiUrl = "https://script.google.com/macros/u/1/s/AKfycbyUbDkRkHWYzc-xLxorpcynDpbTE27yICOGiO4m3QeprFgaTADGYYbOEk3llwSrGGfl/exec";
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            const passwordInput = document.querySelector('input[placeholder="비밀번호"]');
+            const loginButton = document.querySelector('button'); // 로그인 버튼
+            
+            if (passwordInput && loginButton) {
+                passwordInput.addEventListener('keydown', function(event) {
+                    if (event.key === 'Enter') {
+                        event.preventDefault(); // 기본 동작 방지
+                        loginButton.click(); // 로그인 버튼 클릭 실행
+                    }
+                });
             }
         });
-    }
-});
         
         // 전화번호 형식 맞추기 함수
         function formatPhoneNumber(phone) {
@@ -368,7 +367,7 @@ const apiUrl = "https://script.google.com/macros/u/1/s/AKfycbyUbDkRkHWYzc-xLxorp
             // 기존 형식 유지
             return phone;
         }
-		
+        
         // 로그인 함수
         function login() {
             const password = document.getElementById('password').value;
@@ -419,117 +418,85 @@ const apiUrl = "https://script.google.com/macros/u/1/s/AKfycbyUbDkRkHWYzc-xLxorp
             document.querySelector('.clinic-results').style.display = 'none';
             document.querySelector('.admin-panel').style.display = 'none';
         }
-		
-		// 학생 검색 함수
-		function searchStudents() {
-    			loadStudentList(); // 검색할 때마다 목록 새로 로드
-		}
-
-			// 학생 목록 로드 (검색 시에만 표시)
-			function loadStudentList() {
-    			const studentList = document.getElementById('studentList');
-    			studentList.innerHTML = ''; // 기존 목록 초기화
-    
-    			// 검색어가 있을 때만 목록 표시
-    			const searchTerm = document.getElementById('studentSearch').value.toLowerCase().trim();
-    			if (searchTerm === '') {
-        			return; // 검색어 없으면 목록 숨김
-    			}
-    
-    			let hasResults = false;
-    
-    			students.forEach((student, index) => {
-        			const studentName = student.name.toLowerCase();
-        			const studentSchool = student.school.toLowerCase();
-        			const studentGrade = student.grade.toLowerCase();
         
-        			// 이름, 학교, 학년에서 검색
-        			if (studentName.includes(searchTerm) || 
-            			studentSchool.includes(searchTerm) || 
-            			studentGrade.includes(searchTerm)) {
+        // 학생 검색 함수
+        function searchStudents() {
+            loadStudentList(); // 검색할 때마다 목록 새로 로드
+        }
+
+        // 학생 목록 로드 (검색 시에만 표시)
+        function loadStudentList() {
+            const studentList = document.getElementById('studentList');
+            studentList.innerHTML = ''; // 기존 목록 초기화
+        
+            // 검색어가 있을 때만 목록 표시
+            const searchTerm = document.getElementById('studentSearch').value.toLowerCase().trim();
+            if (searchTerm === '') {
+                return; // 검색어 없으면 목록 숨김
+            }
+        
+            let hasResults = false;
+        
+            students.forEach((student, index) => {
+                const studentName = student.name.toLowerCase();
+                const studentSchool = student.school.toLowerCase();
+                const studentGrade = student.grade.toLowerCase();
             
-            			const div = document.createElement('div');
-            			div.className = 'student-item';
-            			div.onclick = () => selectStudentFromList(index);
-            			div.innerHTML = `
-                			<strong>${student.name}</strong><br>
-                			<small>${student.school} | ${student.grade}</small>
-            `			;
-            			studentList.appendChild(div);
-            			hasResults = true;
-        			}
-    			});
-    
-    			// 검색 결과가 없을 때
-    			if (!hasResults && searchTerm !== '') {
-        			const noResultsDiv = document.createElement('div');
-        			noResultsDiv.className = 'no-results';
-        			noResultsDiv.textContent = '검색 결과가 없습니다.';
-        			studentList.appendChild(noResultsDiv);
-    			}
-		}
-    
-    // 검색 결과가 없을 때 메시지 표시
-    let noResultsMsg = document.querySelector('.no-results');
-    if (visibleCount === 0 && searchTerm !== '') {
-        if (!noResultsMsg) {
-            noResultsMsg = document.createElement('div');
-            noResultsMsg.className = 'no-results';
-            noResultsMsg.textContent = '검색 결과가 없습니다.';
-            document.getElementById('studentList').appendChild(noResultsMsg);
-        }
-    } else {
-        if (noResultsMsg) {
-            noResultsMsg.remove();
-        }
-    }
-    
-    // 선택된 학생이 검색 결과에 없으면 선택 해제
-    if (selectedStudent) {
-        const selectedItem = document.querySelector('.student-item.selected');
-        if (selectedItem && selectedItem.classList.contains('hidden')) {
-            selectedStudent = null;
-            selectedItem.classList.remove('selected');
-        }
-    }
-}
-			
-        // 학생 목록 로드
-        function loadApplicationsList() {
-  		fetch(apiUrl)
-    		.then(res => res.json())
-    		.then(applications => {
-      		const applicationsList = document.getElementById('applicationsList');
-      		applicationsList.innerHTML = '<h4>현재 신청 현황:</h4>';
-
-      		if (applications.length === 0) {
-        		applicationsList.innerHTML += '<p>아직 신청된 클리닉이 없습니다.</p>';
-        		return;
-      		}
-
-      		applications.forEach(app => {
-        		const div = document.createElement('div');
-        		div.innerHTML = `
-          		<div style="border: 1px solid #ddd; padding: 10px; margin: 5px 0; border-radius: 5px;">
-              		<strong>${app.name}</strong> | ${app.phone} | ${app.school} | ${app.grade}<br>
-              		<span style="color: #667eea;">클리닉 시간: ${app.time}</span><br>
-              		<small>신청일: ${app.date}</small>
-          		</div>
-        		`;
-        		applicationsList.appendChild(div);
-      		});
-    		})
-    		.catch(err => {
-      		console.error("데이터 조회 실패", err);
-      		alert("신청 내역을 불러오는 데 실패했습니다.");
-    		});
-	}
+                // 이름, 학교, 학년에서 검색
+                if (studentName.includes(searchTerm) || 
+                    studentSchool.includes(searchTerm) || 
+                    studentGrade.includes(searchTerm)) {
+                
+                    const div = document.createElement('div');
+                    div.className = 'student-item';
+                    div.onclick = () => selectStudentFromList(index);
+                    div.innerHTML = `
+                        <strong>${student.name}</strong><br>
+                        <small>${student.school} | ${student.grade}</small>
+                    `;
+                    studentList.appendChild(div);
+                    hasResults = true;
+                }
+            });
         
-        // 학생 선택
+            // 검색 결과가 없을 때
+            if (!hasResults && searchTerm !== '') {
+                const noResultsDiv = document.createElement('div');
+                noResultsDiv.className = 'no-results';
+                noResultsDiv.textContent = '검색 결과가 없습니다.';
+                studentList.appendChild(noResultsDiv);
+            }
+        }
+        
+        // 학생 목록에서 선택
         function selectStudentFromList(index) {
             document.querySelectorAll('.student-item').forEach(item => item.classList.remove('selected'));
-            document.querySelectorAll('.student-item')[index].classList.add('selected');
-            selectedStudent = students[index];
+            
+            // 현재 보이는 학생 항목들 중에서 선택된 것을 찾아 표시
+            const visibleItems = document.querySelectorAll('.student-item:not(.no-results)');
+            const searchTerm = document.getElementById('studentSearch').value.toLowerCase().trim();
+            
+            // 검색 결과에서 실제 학생 인덱스 찾기
+            let currentIndex = 0;
+            for (let i = 0; i < students.length; i++) {
+                const student = students[i];
+                const studentName = student.name.toLowerCase();
+                const studentSchool = student.school.toLowerCase();
+                const studentGrade = student.grade.toLowerCase();
+                
+                if (studentName.includes(searchTerm) || 
+                    studentSchool.includes(searchTerm) || 
+                    studentGrade.includes(searchTerm)) {
+                    if (i === index) {
+                        if (visibleItems[currentIndex]) {
+                            visibleItems[currentIndex].classList.add('selected');
+                        }
+                        selectedStudent = students[i];
+                        break;
+                    }
+                    currentIndex++;
+                }
+            }
         }
         
         function selectStudent() {
@@ -554,54 +521,53 @@ const apiUrl = "https://script.google.com/macros/u/1/s/AKfycbyUbDkRkHWYzc-xLxorp
         
         // 신청 완료
         function submitApplication() {
-  		if (!selectedTime) {
-    		alert('시간을 선택해주세요.');
-    		return;
-  		}
+            if (!selectedTime) {
+                alert('시간을 선택해주세요.');
+                return;
+            }
 
-  		const application = {
-    		name: selectedStudent.name,
-    		phone: selectedStudent.phone,
-    		school: selectedStudent.school,
-    		grade: selectedStudent.grade,
-    		time: selectedTime
-  		};
+            const application = {
+                name: selectedStudent.name,
+                phone: selectedStudent.phone,
+                school: selectedStudent.school,
+                grade: selectedStudent.grade,
+                time: selectedTime
+            };
 
-  		fetch(apiUrl, {
-    		method: "POST",
-    		body: JSON.stringify(application),
-    		headers: {
-      		"Content-Type": "application/json"
-    		}
-  		})
-  		.then(res => res.text())
-  		.then(() => {
-    		alert(`클리닉 신청이 완료되었습니다! 학생: ${application.name} 시간: ${application.time}`);
-    		showMenu();
-  		})
-  		.catch(err => {
-    		console.error("신청 실패", err);
-    		alert("신청 중 오류가 발생했습니다.");
-  		});
-	}
-
+            fetch(apiUrl, {
+                method: "POST",
+                body: JSON.stringify(application),
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            })
+            .then(res => res.text())
+            .then(() => {
+                alert(`클리닉 신청이 완료되었습니다! 학생: ${application.name} 시간: ${application.time}`);
+                showMenu();
+            })
+            .catch(err => {
+                console.error("신청 실패", err);
+                alert("신청 중 오류가 발생했습니다.");
+            });
+        }
         
         // 신청 폼 리셋
         function resetApplicationForm() {
-    		selectedStudent = null;
-    		selectedTime = null;
-    		document.getElementById('studentSelection').classList.remove('hidden');
-    		document.getElementById('timeSelection').classList.add('hidden');
-    		document.querySelectorAll('.student-item').forEach(item => item.classList.remove('selected'));
-    		document.querySelectorAll('.time-slot').forEach(slot => slot.classList.remove('selected'));
-    
-    	// 검색창 초기화 및 학생 목록 숨기기
-    	const searchInput = document.getElementById('studentSearch');
-    		if (searchInput) {
-        	searchInput.value = '';
-        	document.getElementById('studentList').innerHTML = ''; // 목록 완전히 비우기
-    		}
-	}
+            selectedStudent = null;
+            selectedTime = null;
+            document.getElementById('studentSelection').classList.remove('hidden');
+            document.getElementById('timeSelection').classList.add('hidden');
+            document.querySelectorAll('.student-item').forEach(item => item.classList.remove('selected'));
+            document.querySelectorAll('.time-slot').forEach(slot => slot.classList.remove('selected'));
+        
+            // 검색창 초기화 및 학생 목록 숨기기
+            const searchInput = document.getElementById('studentSearch');
+            if (searchInput) {
+                searchInput.value = '';
+                document.getElementById('studentList').innerHTML = ''; // 목록 완전히 비우기
+            }
+        }
         
         function goBackToStudentSelection() {
             document.getElementById('studentSelection').classList.remove('hidden');
@@ -610,26 +576,34 @@ const apiUrl = "https://script.google.com/macros/u/1/s/AKfycbyUbDkRkHWYzc-xLxorp
             selectedTime = null;
         }
         
-        // 관리자 기능들
+        // 관리자 기능 - 신청 목록 로드
         function loadApplicationsList() {
-            const applicationsList = document.getElementById('applicationsList');
-            applicationsList.innerHTML = '<h4>현재 신청 현황:</h4>';
-            
-            if (applications.length === 0) {
-                applicationsList.innerHTML += '<p>아직 신청된 클리닉이 없습니다.</p>';
-                return;
-            }
-            
-            applications.forEach((app, index) => {
-                const div = document.createElement('div');
-                div.innerHTML = `
-                    <div style="border: 1px solid #ddd; padding: 10px; margin: 5px 0; border-radius: 5px;">
-                        <strong>${app.name}</strong> | ${app.phone} | ${app.school} | ${app.grade}<br>
-                        <span style="color: #667eea;">클리닉 시간: ${app.time}</span><br>
-                        <small>신청일: ${app.date}</small>
-                    </div>
-                `;
-                applicationsList.appendChild(div);
+            fetch(apiUrl)
+            .then(res => res.json())
+            .then(applications => {
+                const applicationsList = document.getElementById('applicationsList');
+                applicationsList.innerHTML = '<h4>현재 신청 현황:</h4>';
+
+                if (applications.length === 0) {
+                    applicationsList.innerHTML += '<p>아직 신청된 클리닉이 없습니다.</p>';
+                    return;
+                }
+
+                applications.forEach(app => {
+                    const div = document.createElement('div');
+                    div.innerHTML = `
+                        <div style="border: 1px solid #ddd; padding: 10px; margin: 5px 0; border-radius: 5px;">
+                            <strong>${app.name}</strong> | ${app.phone} | ${app.school} | ${app.grade}<br>
+                            <span style="color: #667eea;">클리닉 시간: ${app.time}</span><br>
+                            <small>신청일: ${app.date}</small>
+                        </div>
+                    `;
+                    applicationsList.appendChild(div);
+                });
+            })
+            .catch(err => {
+                console.error("데이터 조회 실패", err);
+                alert("신청 내역을 불러오는 데 실패했습니다.");
             });
         }
         
@@ -780,7 +754,7 @@ const apiUrl = "https://script.google.com/macros/u/1/s/AKfycbyUbDkRkHWYzc-xLxorp
                         };
                         
                         // 전화번호 형식 간단 검증
-                        if (!/^010-\\d{4}-\\d{4}$/.test(student.phone)) {
+                        if (!/^010-\d{4}-\d{4}$/.test(student.phone)) {
                             // 자동 포맷팅 시도
                             const phoneNumbers = student.phone.replace(/[^0-9]/g, '');
                             if (phoneNumbers.length === 11 && phoneNumbers.startsWith('010')) {
